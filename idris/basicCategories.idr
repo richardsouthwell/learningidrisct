@@ -36,7 +36,7 @@ record Category where
 
 
 DiscreteMorphism : (x, y : a) -> Type
-DiscreteMorphism x y = x = y
+DiscreteMorphism x y = (x = y)
 
 
 

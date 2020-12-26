@@ -79,8 +79,8 @@ Richard Southwell
 \end_layout
 
 \begin_layout Standard
-The aim of this document is to explain the very basics of Statebox's Idris
- code for doing category theory.
+The aim of this document is to explain the basics of Statebox's idris code
+ for category theory.
  The code here belongs to Statebox 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -106,26 +106,11 @@ key "HoTT"
 \end_inset
 
 .
- The Idris code discussed in this document can be found here 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "github"
-
-\end_inset
-
-, although it was copied from 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Statebox"
-
-\end_inset
-
-.
+ The idris code discussed in this document can be found here ***.
 \end_layout
 
 \begin_layout Standard
-I am not part of Statebox.
- Misunderstandings are my own.
+Misunderstandings are my own.
 \end_layout
 
 \begin_layout Section
@@ -133,7 +118,7 @@ Encoding Categories
 \end_layout
 
 \begin_layout Standard
-The Idris code 
+The idris code 
 \end_layout
 
 \begin_layout Standard
@@ -357,7 +342,7 @@ Encoding Discrete Categories
 \end_layout
 
 \begin_layout Standard
-To illustraite the above encoding of a category in Idris, we wish to define
+To illustraite the above encoding of a category in idris, we wish to define
  a function called discreteCategory which sends a type 
 \begin_inset Formula $a$
 \end_inset
@@ -619,25 +604,6 @@ key "HoTT"
 Program, The Univalent Foundations.
  "Homotopy Type Theory: Univalent Foundations of Mathematics." arXiv preprint
  arXiv:1308.0729 (2013).
-\end_layout
-
-\begin_layout Bibliography
-\begin_inset CommandInset bibitem
-LatexCommand bibitem
-label "github"
-key "github"
-
-\end_inset
-
-
-\begin_inset CommandInset href
-LatexCommand href
-name "my idris ct code"
-target "https://github.com/richardsouthwell/learningidrisct"
-
-\end_inset
-
-
 \end_layout
 
 \end_body

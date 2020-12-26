@@ -80,7 +80,7 @@ Richard Southwell
 
 \begin_layout Standard
 The aim of this document is to explain the very basics of Statebox's Idris
- code for doing category theory.
+ code for category theory.
  The code here belongs to Statebox 
 \begin_inset CommandInset citation
 LatexCommand cite
