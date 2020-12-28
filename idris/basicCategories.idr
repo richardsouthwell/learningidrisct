@@ -84,6 +84,36 @@ EndomorphismsOfTrue = mor MyFirstCategory MyTrue MyTrue
 MyFirstArrow : EndomorphismsOfTrue
 MyFirstArrow = Refl
 
+veryBigCategory : Category
+veryBigCategory = discreteCategory Type
+ 
+setMor : Type -> Type -> Type
+setMor a b = (a -> b)
 
+setId : (a : Type) -> setMor a a
+setId a = (\x => x) 
 
+mycompose       : (a, b, c : Type)
+                 -> (f : setMor a b)
+                 -> (g : setMor b c)
+                 -> setMor a c
 
+mycompose a b c f g = (\av => g (f av))
+myleftIdentity  : (a, b : Type)
+                 -> (f : setMor a b)
+                 -> mycompose a a b (setId a) f = f
+myrightIdentity : (a, b : Type)
+                 -> (f : setMor a b)
+                 -> mycompose a b b f (setId b) = f
+myassociativity : (a, b, c, d : Type)
+                 -> (f : setMor a b)
+                 -> (g : setMor b c)
+                 -> (h : setMor c d)
+                 -> mycompose a b d f (mycompose b c d g h) = mycompose a c d (mycompose a b c f g) h
+
+theCategorySet : Category
+theCategorySet = MkCategory Type setMor setId mycompose myleftIdentity myrightIdentity myassociativity
+
+-- Type : Type 1
+-- universe heirachy
+-- http://docs.idris-lang.org/en/latest/faq/faq.html
