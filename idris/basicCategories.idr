@@ -84,6 +84,14 @@ EndomorphismsOfTrue = mor MyFirstCategory MyTrue MyTrue
 MyFirstArrow : EndomorphismsOfTrue
 MyFirstArrow = Refl
 
+undefinedFun : String -> Nat
+-- undefinedFun "h"
+
+--functionalExtensionality : {a : Type} -> {b : Type} -> {f : a -> b} -> {g : a -> b}  ->
+--     ((x : a) -> (f x = g x)) -> (f = g)
+functionalExtensionality : (a : Type) -> (b : Type) -> (f : a -> b) -> (g : a -> b)  ->
+    ((x : a) -> (f x = g x)) -> (f = g)
+
 veryBigCategory : Category
 veryBigCategory = discreteCategory Type
  
@@ -102,18 +110,34 @@ mycompose a b c f g = (\av => g (f av))
 myleftIdentity  : (a, b : Type)
                  -> (f : setMor a b)
                  -> mycompose a a b (setId a) f = f
+-- myleftIdentity a b f = ?wat
+-- :t ?wat 
+myleftIdentity a b f = Refl
+    
+
 myrightIdentity : (a, b : Type)
                  -> (f : setMor a b)
                  -> mycompose a b b f (setId b) = f
+myrightIdentity a b f = Refl
 myassociativity : (a, b, c, d : Type)
                  -> (f : setMor a b)
                  -> (g : setMor b c)
                  -> (h : setMor c d)
                  -> mycompose a b d f (mycompose b c d g h) = mycompose a c d (mycompose a b c f g) h
-
+--myassociativity a b c d f g h = ?huh
+myassociativity a b c d f g h = Refl
 theCategorySet : Category
 theCategorySet = MkCategory Type setMor setId mycompose myleftIdentity myrightIdentity myassociativity
 
 -- Type : Type 1
 -- universe heirachy
 -- http://docs.idris-lang.org/en/latest/faq/faq.html
+
+-- reddit.com/r/Idris/comments/fzjhny/how_to_prove_functions_are_equal/
+-- It can't be proved in general, unfortunately. What you need is function extensionality:
+-- forall f g. (forall x. f x = g x) -> f = g
+-- Which is not a theorem in Idris. You can use it as an axiom, however.
+
+
+
+
