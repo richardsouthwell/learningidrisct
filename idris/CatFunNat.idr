@@ -2,6 +2,8 @@
 -- git clone https://github.com/statebox/idris-ct.git
 -- git checkout a65822b759
 
+--import Utils
+
 import Syntax.PreorderReasoning
 
 record Category where
@@ -130,3 +132,41 @@ naturalTransformationComposition cat1 cat2 fun1 fun2 fun3
            ={ sym $ associativity cat2 _ _ _ _ (mapMor fun1 _ _ f) (comp1 y) (comp2 y) }=
          (compose cat2 _ _ _ (mapMor fun1 _ _ f) (compose cat2 _ _ _ (comp1 y) (comp2 y)))
        QED)
+--
+
+
+idTransformation :
+   (cat1, cat2 : Category)
+   -> (fun : CFunctor cat1 cat2)
+   -> NaturalTransformation cat1 cat2 fun fun
+idTransformation cat1 cat2 fun = MkNaturalTransformation
+   (\a => identity cat2 (mapObj fun a))
+   (\a, b, f =>
+   (compose cat2 _ _ _ (identity cat2 (mapObj fun a)) (mapMor fun a b f))
+   ={ leftIdentity cat2 _ _ (mapMor fun a b f) }=
+   (mapMor fun a b f)
+   ={ sym $ rightIdentity cat2 _ _ (mapMor fun a b f) }=
+   (compose cat2 _ _ _ (mapMor fun a b f) (identity cat2 (mapObj fun b)))
+   QED)
+--
+functorCategory : (cat1, cat2 : Category) -> Category
+functorCategory cat1 cat2 = MkCategory
+   (CFunctor cat1 cat2)
+   (NaturalTransformation cat1 cat2)
+   (idTransformation cat1 cat2)
+   (naturalTransformationComposition cat1 cat2)
+   (\fun1, fun2, (MkNaturalTransformation comp comm) =>
+     naturalTransformationExt cat1 cat2 fun1 fun2 _
+       (MkNaturalTransformation comp comm)
+       (\a => (leftIdentity _ _ _ _)))
+   (\fun1, fun2, (MkNaturalTransformation comp comm) =>
+     naturalTransformationExt cat1 cat2 fun1 fun2 _
+       (MkNaturalTransformation comp comm)
+       (\a => (rightIdentity _ _ _ _)))
+   (\fun1, fun2, fun3, fun4,
+     (MkNaturalTransformation comp1 comm1),
+     (MkNaturalTransformation comp2 comm2),
+     (MkNaturalTransformation comp3 comm3) =>
+       naturalTransformationExt cat1 cat2 fun1 fun4 _ _
+       (\a => associativity _ _ _ _ _ _ _ _))
+--
