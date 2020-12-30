@@ -53,7 +53,7 @@ DiscreteMorphism x y = (x = y)
 
 discreteIdentity : (x : a) -> DiscreteMorphism x x
 discreteIdentity _ = Refl
-
+-- idris --total
 discreteCompose : (x, y, z : a) -> DiscreteMorphism x y -> DiscreteMorphism y z -> DiscreteMorphism x z
 discreteCompose _ _ _ Refl Refl = Refl
 
@@ -130,10 +130,14 @@ mycompose a b c f g = (\av => g (f av))
 myleftIdentity  : (a, b : Type)
                  -> (f : setMor a b)
                  -> mycompose a a b (setId a) f = f
--- myleftIdentity a b f = ?wat
+--myleftIdentity a b f = ?wat
 -- :t ?wat 
 myleftIdentity a b f = Refl
     
+-- :doc Type
+-- :printdef modInt
+-- :printdef snd
+
 
 myrightIdentity : (a, b : Type)
                  -> (f : setMor a b)
@@ -254,7 +258,36 @@ record CFunctor (cat1 : Category) (cat2 : Category) where
                     = compose cat2 (mapObj a) (mapObj b) (mapObj c) (mapMor a b f) (mapMor b c g)
   
 
-
+--functorEq : (cat1, cat2 : Category)
+--                    -> (fun1, fun2 : CFunctor cat1 cat2)
+--                    -> ((a : obj cat1) -> mapObj fun1 a = mapObj fun2 a)
+ --                   -> ((a, b : obj cat1) -> (f : mor cat1 a b) -> mapMor fun1 a b f ~=~ mapMor fun2 a b f)
+ --                   -> fun1 = fun2
+ --                 functorEq cat1 cat2 fun1 fun2 prfObj prfMor = believe_me ()
+                  
+                  
+idFunctor : (cat : Category) -> CFunctor cat cat
+idFunctor cat = MkCFunctor id (\a, b => id) (\a => Refl) (\a, b, c, f, g => Refl)
+                  
+                  
+--functorComposition :
+--                       (cat1, cat2, cat3 : Category)
+--                    -> CFunctor cat1 cat2
+--                    -> CFunctor cat2 cat3
+--                    -> CFunctor cat1 cat3
+--                  functorComposition cat1 cat2 cat3 fun1 fun2 = MkCFunctor
+--                    ((mapObj fun2) . (mapObj fun1))
+--                    (\a, b => (mapMor fun2 (mapObj fun1 a) (mapObj fun1 b)) . (mapMor fun1 a b))
+--                    (\a => trans (cong (mapMor fun2 (mapObj fun1 a) (mapObj fun1 a)) (preserveId fun1 a))
+--                                 (preserveId fun2 (mapObj fun1 a))
+--                    )
+--                    (\a, b, c, f, g => trans (cong (mapMor fun2 (mapObj fun1 a) (mapObj fun1 c)) (preserveCompose fun1 a b c f g))
+--                                             (preserveCompose fun2
+--                                                              (mapObj fun1 a)
+--                                                              (mapObj fun1 b)
+--                                                              (mapObj fun1 c)
+--                                                              (mapMor fun1 a b f)
+--                                                              (mapMor fun1 b c g)))
 
 
 
