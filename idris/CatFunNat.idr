@@ -226,3 +226,106 @@ catsAssociativity cat1 cat2 cat3 cat4 func1 func2 func3 = functorEq
 
 -- uncommenting out the above code, and running, produces "universe inconsistency", 
 -- presumably this is a russle style paradox from having a category of categories
+
+---------------------- encode Set
+
+setMor : Type -> Type -> Type
+setMor a b = (a -> b)
+
+setId : (a : Type) -> setMor a a
+setId a = (\x => x) 
+
+mycompose       : (a, b, c : Type)
+                 -> (f : setMor a b)
+                 -> (g : setMor b c)
+                 -> setMor a c
+
+mycompose a b c f g = (\av => g (f av))
+myleftIdentity  : (a, b : Type)
+                 -> (f : setMor a b)
+                 -> mycompose a a b (setId a) f = f
+--myleftIdentity a b f = ?wat
+-- :t ?wat 
+myleftIdentity a b f = Refl
+    
+-- :doc Type
+-- :printdef modInt
+-- :printdef snd
+
+
+myrightIdentity : (a, b : Type)
+                 -> (f : setMor a b)
+                 -> mycompose a b b f (setId b) = f
+myrightIdentity a b f = Refl
+myassociativity : (a, b, c, d : Type)
+                 -> (f : setMor a b)
+                 -> (g : setMor b c)
+                 -> (h : setMor c d)
+                 -> mycompose a b d f (mycompose b c d g h) = mycompose a c d (mycompose a b c f g) h
+--myassociativity a b c d f g h = ?huh
+myassociativity a b c d f g h = Refl
+theCategorySet : Category
+theCategorySet = MkCategory Type setMor setId mycompose myleftIdentity myrightIdentity myassociativity
+
+------------------------------------ single arrow category
+
+data MyUnit = Star
+data FunCatObj = Lobj | Vobj
+data MyArrow = Pointer
+
+
+total
+FunCatMor : FunCatObj -> FunCatObj -> Type
+FunCatMor Lobj Lobj =  MyUnit
+FunCatMor Lobj Vobj =  MyArrow
+FunCatMor Vobj Lobj =  Void
+FunCatMor Vobj Vobj =  MyUnit
+
+FunCatId : (a : FunCatObj) -> FunCatMor a a
+FunCatId Lobj = Star
+FunCatId Vobj = Star
+
+
+FunCatComp       : (a, b, c : FunCatObj)
+                 -> (f : FunCatMor a b)
+                 -> (g : FunCatMor b c)
+                 -> FunCatMor a c
+                 
+FunCatComp Lobj Lobj Lobj Star Star = Star
+FunCatComp Lobj Lobj Vobj Star Pointer = Pointer
+FunCatComp Lobj Vobj Vobj Pointer Star = Pointer
+FunCatComp Vobj Vobj Vobj Star Star = Star
+
+FunCatLeftIdentity  : (a, b : FunCatObj)
+                 -> (f : FunCatMor a b)
+                 -> FunCatComp a a b (FunCatId a) f = f
+FunCatLeftIdentity Lobj Lobj Star = Refl
+FunCatLeftIdentity Lobj Vobj Pointer = Refl
+FunCatLeftIdentity Vobj Vobj Star = Refl
+
+FunCatRightIdentity : (a, b : FunCatObj)
+                 -> (f : FunCatMor a b)
+                 -> FunCatComp a b b f (FunCatId b) = f
+FunCatRightIdentity Lobj Lobj Star = Refl
+FunCatRightIdentity Lobj Vobj Pointer = Refl
+FunCatRightIdentity Vobj Vobj Star = Refl
+
+FunCatAssociativity : (a, b, c, d : FunCatObj)
+                 -> (f : FunCatMor a b)
+                 -> (g : FunCatMor b c)
+                 -> (h : FunCatMor c d)
+                 -> FunCatComp a b d f (FunCatComp b c d g h) = FunCatComp a c d (FunCatComp a b c f g) h
+FunCatAssociativity Lobj Lobj Lobj Lobj Star Star Star = Refl
+FunCatAssociativity Lobj Lobj Lobj Vobj Star Star Pointer = Refl
+FunCatAssociativity Lobj Lobj Vobj Vobj Star Pointer Star = Refl
+FunCatAssociativity Lobj Vobj Vobj Vobj Pointer Star Star = Refl
+FunCatAssociativity Vobj Vobj Vobj Vobj Star Star Star = Refl
+
+singleArrowCategory : Category
+singleArrowCategory = MkCategory FunCatObj FunCatMor FunCatId FunCatComp FunCatLeftIdentity FunCatRightIdentity FunCatAssociativity
+
+---- make category of functions
+
+categoryOfFunctions : Category
+
+categoryOfFunctions = functorCategory singleArrowCategory theCategorySet
