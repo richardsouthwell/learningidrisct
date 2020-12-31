@@ -329,3 +329,83 @@ singleArrowCategory = MkCategory FunCatObj FunCatMor FunCatId FunCatComp FunCatL
 categoryOfFunctions : Category
 
 categoryOfFunctions = functorCategory singleArrowCategory theCategorySet
+
+-----------------------------------------
+
+------------------------------------ parallel arrow category (category11)
+
+--data MyUnit = Star
+data Cat11Obj = Eo | Vo
+data Arrows11 = Sa | Ta
+
+
+total
+Cat11Mor : Cat11Obj -> Cat11Obj -> Type
+Cat11Mor Eo Eo =  MyUnit
+Cat11Mor Eo Vo =  Arrows11
+Cat11Mor Vo Eo =  Void
+Cat11Mor Vo Vo =  MyUnit
+
+Cat11Id : (a : Cat11Obj) -> Cat11Mor a a
+Cat11Id Eo = Star
+Cat11Id Vo = Star
+
+Cat11Comp       : (a, b, c : Cat11Obj)
+                 -> (f : Cat11Mor a b)
+                 -> (g : Cat11Mor b c)
+                 -> Cat11Mor a c
+                 
+Cat11Comp Eo Eo Eo Star Star = Star
+Cat11Comp Eo Eo Vo Star Sa = Sa
+Cat11Comp Eo Eo Vo Star Ta = Ta
+Cat11Comp Eo Vo Vo Sa Star = Sa
+Cat11Comp Eo Vo Vo Ta Star = Ta
+Cat11Comp Vo Vo Vo Star Star = Star
+
+Cat11LeftIdentity  : (a, b : Cat11Obj)
+                 -> (f : Cat11Mor a b)
+                 -> Cat11Comp a a b (Cat11Id a) f = f
+Cat11LeftIdentity Eo Eo Star = Refl
+Cat11LeftIdentity Eo Vo Sa = Refl
+Cat11LeftIdentity Eo Vo Ta = Refl
+Cat11LeftIdentity Vo Vo Star = Refl
+
+
+Cat11RightIdentity : (a, b : Cat11Obj)
+                 -> (f : Cat11Mor a b)
+                 -> Cat11Comp a b b f (Cat11Id b) = f
+Cat11RightIdentity Eo Eo Star = Refl
+Cat11RightIdentity Eo Vo Sa = Refl
+Cat11RightIdentity Eo Vo Ta = Refl
+Cat11RightIdentity Vo Vo Star = Refl
+
+Cat11Associativity : (a, b, c, d : Cat11Obj)
+                 -> (f : Cat11Mor a b)
+                 -> (g : Cat11Mor b c)
+                 -> (h : Cat11Mor c d)
+                 -> Cat11Comp a b d f (Cat11Comp b c d g h) = Cat11Comp a c d (Cat11Comp a b c f g) h
+Cat11Associativity Eo Eo Eo Eo Star Star Star = Refl
+Cat11Associativity Eo Eo Eo Vo Star Star Sa = Refl
+Cat11Associativity Eo Eo Eo Vo Star Star Ta = Refl
+Cat11Associativity Eo Eo Vo Vo Star Sa Star = Refl
+Cat11Associativity Eo Eo Vo Vo Star Ta Star = Refl
+Cat11Associativity Eo Vo Vo Vo Sa Star Star = Refl
+Cat11Associativity Eo Vo Vo Vo Ta Star Star = Refl
+Cat11Associativity Vo Vo Vo Vo Star Star Star = Refl
+
+category11 : Category
+category11 = MkCategory Cat11Obj Cat11Mor Cat11Id Cat11Comp Cat11LeftIdentity Cat11RightIdentity Cat11Associativity
+
+---- make category of functions
+
+categoryOfGraphs : Category
+
+categoryOfGraphs = functorCategory category11 theCategorySet
+
+
+-- do graph example
+-- implement category of dynamical systems
+-- fix category of categories
+-- encode adjunctions
+-- encode Cat <-> Graph adjoint functions
+-- encode Kan extensions
