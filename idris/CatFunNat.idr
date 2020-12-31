@@ -403,7 +403,53 @@ categoryOfGraphs : Category
 categoryOfGraphs = functorCategory category11 theCategorySet
 
 
--- do graph example
+---------------- do graph example
+
+data Ge = Le | Re
+data Gv = Lv | Rv
+idGe : Ge -> Ge
+idGe = (\em => em)
+idGv : Gv -> Gv
+idGv = (\x => x)
+sourceMap : Ge -> Gv
+sourceMap Le = Rv
+sourceMap Re = Lv
+targetMap : Ge -> Gv
+targetMap Le = Lv
+targetMap Re = Rv
+
+
+
+TwoWayMapObj          : obj Main.category11 -> obj Main.theCategorySet
+TwoWayMapObj Eo = Ge
+TwoWayMapObj Vo = Gv
+TwoWayMapMor          : (a, b : obj Main.category11)
+                  -> mor Main.category11 a b
+                  -> mor Main.theCategorySet (TwoWayMapObj a) (TwoWayMapObj b)
+TwoWayMapMor Eo Eo Star = idGe
+TwoWayMapMor Eo Vo Sa = sourceMap
+TwoWayMapMor Eo Vo Ta = targetMap
+TwoWayMapMor Vo Vo Star = idGv
+TwoWayPreserveId      : (a : obj Main.category11)
+                  -> TwoWayMapMor a a (identity Main.category11 a) = identity Main.theCategorySet (TwoWayMapObj a)
+TwoWayPreserveCompose : (a, b, c : obj Main.category11)
+                  -> (f : mor Main.category11 a b)
+                  -> (g : mor Main.category11 b c)
+                  -> TwoWayMapMor a c (compose Main.category11 a b c f g)
+                   = compose Main.theCategorySet (TwoWayMapObj a) (TwoWayMapObj b) (TwoWayMapObj c) (TwoWayMapMor a b f) (TwoWayMapMor b c g)
+-- need to fill the holes here
+
+myFirstFunctor : CFunctor Main.category11 Main.theCategorySet
+myFirstFunctor = MkCFunctor TwoWayMapObj TwoWayMapMor TwoWayPreserveId TwoWayPreserveCompose
+
+myFirstNat : NaturalTransformation Main.category11 Main.theCategorySet Main.myFirstFunctor Main.myFirstFunctor
+myFirstNat = idTransformation Main.category11 Main.theCategorySet Main.myFirstFunctor
+
+
+-- still have to turn this functor into an oject of the category of graphs, 
+-- also have to fill holes, and code a natural transformation, and encode that as an arrow 
+
+
 -- implement category of dynamical systems
 -- fix category of categories
 -- encode adjunctions
